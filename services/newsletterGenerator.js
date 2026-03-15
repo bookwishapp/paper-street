@@ -426,6 +426,11 @@ function generateEventsSection(events) {
       <h2 style="color: #1B2B38; font-size: 24px; margin-bottom: 20px; border-bottom: 2px solid #84AE88; padding-bottom: 10px; font-family: 'Playfair Display', Georgia, serif; font-weight: 700;">
         This week at Sinclair Inlet
       </h2>
+      <p style="text-align: center; margin-bottom: 20px;">
+        <a href="https://paperstreet.sinclairinlet.com#events" style="color: #5AACAA; font-weight: 600; text-decoration: none; font-family: 'Josefin Sans', sans-serif;">
+          View all events on our website →
+        </a>
+      </p>
   `;
 
   // Swap events
@@ -517,9 +522,11 @@ function generateNewsletterHTML(nytMatches, newItems, events) {
 
     <!-- Header -->
     <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #5AACAA;">
-      <h1 style="color: #1B2B38; margin: 0; font-size: 32px; font-family: 'Playfair Display', Georgia, serif; font-weight: 900;">
-        Sinclair Inlet Book Co.
-      </h1>
+      <a href="https://sinclairinlet.com" style="text-decoration: none;">
+        <h1 style="color: #1B2B38; margin: 0; font-size: 32px; font-family: 'Playfair Display', Georgia, serif; font-weight: 900;">
+          Sinclair Inlet Book Co.
+        </h1>
+      </a>
       <p style="color: #7A8C96; margin: 10px 0 0 0; font-size: 14px; font-family: 'Josefin Sans', sans-serif; text-transform: uppercase; letter-spacing: 0.1em;">
         Your weekly update from Port Orchard's bookshop
       </p>
@@ -541,8 +548,13 @@ function generateNewsletterHTML(nytMatches, newItems, events) {
         Saturday 11-5 | Sunday 12-4<br>
         Closed Monday
       </p>
+      <p style="margin: 15px 0;">
+        <a href="https://sinclairinlet.com" style="color: #5AACAA; text-decoration: none; font-weight: 600; margin: 0 10px;">Visit Our Website</a>
+        |
+        <a href="https://paperstreet.sinclairinlet.com" style="color: #5AACAA; text-decoration: none; font-weight: 600; margin: 0 10px;">Paper Street Thrift</a>
+      </p>
       <p style="margin: 15px 0 0 0;">
-        <a href="${unsubscribeLink}" style="color: #5AACAA; text-decoration: none; font-weight: 600;">Unsubscribe</a>
+        <a href="${unsubscribeLink}" style="color: #7A8C96; text-decoration: none; font-size: 12px;">Unsubscribe</a>
       </p>
     </div>
 

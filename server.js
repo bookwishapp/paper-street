@@ -12,6 +12,7 @@ const eventsAdmin = require('./routes/eventsAdmin');
 const subscribersAdmin = require('./routes/subscribersAdmin');
 const healthRoutes = require('./routes/health');
 const contentApiRoutes = require('./routes/contentApi');
+const debugRoutes = require('./routes/debug');
 
 // Import and initialize scheduler
 const { initializeScheduler } = require('./scheduler');
@@ -41,6 +42,9 @@ app.use(session({
 
 // Health and API routes
 app.use(healthRoutes);
+
+// Debug routes (for troubleshooting)
+app.use(debugRoutes);
 
 // Apply CORS to public API endpoints only
 app.use('/api/content', cors({
