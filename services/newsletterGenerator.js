@@ -349,7 +349,7 @@ function generateNYTSection(matches) {
 
   let html = `
     <div style="margin-bottom: 40px;">
-      <h2 style="color: #2c3e50; font-size: 24px; margin-bottom: 20px; border-bottom: 2px solid #3498db; padding-bottom: 10px;">
+      <h2 style="color: #1B2B38; font-size: 24px; margin-bottom: 20px; border-bottom: 2px solid #5AACAA; padding-bottom: 10px; font-family: 'Playfair Display', Georgia, serif; font-weight: 700;">
         On the NYT list — and on our shelves
       </h2>
       <div style="display: grid; gap: 20px;">
@@ -357,17 +357,17 @@ function generateNYTSection(matches) {
 
   matches.forEach((match) => {
     html += `
-      <div style="padding: 15px; background: #f8f9fa; border-left: 4px solid #3498db;">
-        <div style="font-weight: bold; font-size: 18px; color: #2c3e50; margin-bottom: 5px;">
+      <div style="padding: 15px; background: #D4EDEC; border-left: 4px solid #5AACAA;">
+        <div style="font-weight: 600; font-size: 18px; color: #1B2B38; margin-bottom: 5px; font-family: 'Playfair Display', Georgia, serif;">
           ${match.title}
         </div>
-        <div style="color: #7f8c8d; margin-bottom: 5px;">
+        <div style="color: #7A8C96; margin-bottom: 5px; font-family: 'Josefin Sans', sans-serif;">
           by ${match.author}
         </div>
-        <div style="color: #95a5a6; font-size: 14px; margin-bottom: 5px;">
+        <div style="color: #7A8C96; font-size: 14px; margin-bottom: 5px; font-family: 'Josefin Sans', sans-serif;">
           ${match.listName} - #${match.rank}
         </div>
-        ${match.price ? `<div style="font-weight: bold; color: #27ae60; font-size: 16px;">${match.price}</div>` : ''}
+        ${match.price ? `<div style="font-weight: 600; color: #2E7A78; font-size: 16px; font-family: 'Josefin Sans', sans-serif;">${match.price}</div>` : ''}
       </div>
     `;
   });
@@ -388,7 +388,7 @@ function generateNewItemsSection(items) {
 
   let html = `
     <div style="margin-bottom: 40px;">
-      <h2 style="color: #2c3e50; font-size: 24px; margin-bottom: 20px; border-bottom: 2px solid #e67e22; padding-bottom: 10px;">
+      <h2 style="color: #1B2B38; font-size: 24px; margin-bottom: 20px; border-bottom: 2px solid #EAC45A; padding-bottom: 10px; font-family: 'Playfair Display', Georgia, serif; font-weight: 700;">
         New this week
       </h2>
       <div style="display: grid; gap: 20px;">
@@ -396,12 +396,12 @@ function generateNewItemsSection(items) {
 
   items.forEach((item) => {
     html += `
-      <div style="padding: 15px; background: #fef5e7; border-left: 4px solid #e67e22;">
-        <div style="font-weight: bold; font-size: 18px; color: #2c3e50; margin-bottom: 5px;">
+      <div style="padding: 15px; background: #FAF0CC; border-left: 4px solid #EAC45A;">
+        <div style="font-weight: 600; font-size: 18px; color: #1B2B38; margin-bottom: 5px; font-family: 'Playfair Display', Georgia, serif;">
           ${item.name}
         </div>
-        ${item.price ? `<div style="font-weight: bold; color: #27ae60; font-size: 16px; margin-bottom: 5px;">${item.price}</div>` : ''}
-        ${item.description ? `<div style="color: #7f8c8d; font-size: 14px;">${item.description}</div>` : ''}
+        ${item.price ? `<div style="font-weight: 600; color: #2E7A78; font-size: 16px; margin-bottom: 5px; font-family: 'Josefin Sans', sans-serif;">${item.price}</div>` : ''}
+        ${item.description ? `<div style="color: #7A8C96; font-size: 14px; font-family: 'Josefin Sans', sans-serif;">${item.description}</div>` : ''}
       </div>
     `;
   });
@@ -423,26 +423,26 @@ function generateEventsSection(events) {
   const groups = groupEventsByCategory(events);
   let html = `
     <div style="margin-bottom: 40px;">
-      <h2 style="color: #2c3e50; font-size: 24px; margin-bottom: 20px; border-bottom: 2px solid #9b59b6; padding-bottom: 10px;">
-        This week at Paper Street
+      <h2 style="color: #1B2B38; font-size: 24px; margin-bottom: 20px; border-bottom: 2px solid #84AE88; padding-bottom: 10px; font-family: 'Playfair Display', Georgia, serif; font-weight: 700;">
+        This week at Sinclair Inlet
       </h2>
   `;
 
   // Swap events
   if (groups.swap.length > 0) {
-    html += '<h3 style="color: #8e44ad; font-size: 20px; margin-bottom: 15px;">Swap Events</h3>';
+    html += '<h3 style="color: #84AE88; font-size: 20px; margin-bottom: 15px; font-family: \'Playfair Display\', Georgia, serif;">Swap Events</h3>';
     groups.swap.forEach((event) => {
       const { date, time } = formatEventDateTime(event.event_date, event.event_time);
       html += `
-        <div style="padding: 15px; background: #f4ecf7; border-left: 4px solid #9b59b6; margin-bottom: 15px;">
-          <div style="font-weight: bold; font-size: 18px; color: #2c3e50; margin-bottom: 5px;">
+        <div style="padding: 15px; background: #D9EAD9; border-left: 4px solid #84AE88; margin-bottom: 15px;">
+          <div style="font-weight: 600; font-size: 18px; color: #1B2B38; margin-bottom: 5px; font-family: 'Playfair Display', Georgia, serif;">
             ${event.title}
           </div>
-          <div style="color: #7f8c8d; font-size: 14px; margin-bottom: 3px;">
+          <div style="color: #7A8C96; font-size: 14px; margin-bottom: 3px; font-family: 'Josefin Sans', sans-serif;">
             ${date} at ${time}
           </div>
-          ${event.admission ? `<div style="color: #27ae60; font-size: 14px; margin-bottom: 3px;">Admission: ${event.admission}</div>` : ''}
-          ${event.notes ? `<div style="color: #7f8c8d; font-size: 14px; margin-top: 8px;">${event.notes}</div>` : ''}
+          ${event.admission ? `<div style="color: #2E7A78; font-size: 14px; margin-bottom: 3px; font-family: 'Josefin Sans', sans-serif;">Admission: ${event.admission}</div>` : ''}
+          ${event.notes ? `<div style="color: #7A8C96; font-size: 14px; margin-top: 8px; font-family: 'Josefin Sans', sans-serif;">${event.notes}</div>` : ''}
         </div>
       `;
     });
@@ -450,19 +450,19 @@ function generateEventsSection(events) {
 
   // Thursday events
   if (groups.thursday.length > 0) {
-    html += '<h3 style="color: #8e44ad; font-size: 20px; margin-bottom: 15px; margin-top: 20px;">Thursday Events</h3>';
+    html += '<h3 style="color: #84AE88; font-size: 20px; margin-bottom: 15px; margin-top: 20px; font-family: \'Playfair Display\', Georgia, serif;">Thursday Events</h3>';
     groups.thursday.forEach((event) => {
       const { date, time } = formatEventDateTime(event.event_date, event.event_time);
       html += `
-        <div style="padding: 15px; background: #f4ecf7; border-left: 4px solid #9b59b6; margin-bottom: 15px;">
-          <div style="font-weight: bold; font-size: 18px; color: #2c3e50; margin-bottom: 5px;">
+        <div style="padding: 15px; background: #D9EAD9; border-left: 4px solid #84AE88; margin-bottom: 15px;">
+          <div style="font-weight: 600; font-size: 18px; color: #1B2B38; margin-bottom: 5px; font-family: 'Playfair Display', Georgia, serif;">
             ${event.title}
           </div>
-          <div style="color: #7f8c8d; font-size: 14px; margin-bottom: 3px;">
+          <div style="color: #7A8C96; font-size: 14px; margin-bottom: 3px; font-family: 'Josefin Sans', sans-serif;">
             ${date} at ${time}
           </div>
-          ${event.admission ? `<div style="color: #27ae60; font-size: 14px; margin-bottom: 3px;">Admission: ${event.admission}</div>` : ''}
-          ${event.notes ? `<div style="color: #7f8c8d; font-size: 14px; margin-top: 8px;">${event.notes}</div>` : ''}
+          ${event.admission ? `<div style="color: #2E7A78; font-size: 14px; margin-bottom: 3px; font-family: 'Josefin Sans', sans-serif;">Admission: ${event.admission}</div>` : ''}
+          ${event.notes ? `<div style="color: #7A8C96; font-size: 14px; margin-top: 8px; font-family: 'Josefin Sans', sans-serif;">${event.notes}</div>` : ''}
         </div>
       `;
     });
@@ -470,19 +470,19 @@ function generateEventsSection(events) {
 
   // Special events
   if (groups.special.length > 0) {
-    html += '<h3 style="color: #8e44ad; font-size: 20px; margin-bottom: 15px; margin-top: 20px;">Special Events</h3>';
+    html += '<h3 style="color: #84AE88; font-size: 20px; margin-bottom: 15px; margin-top: 20px; font-family: \'Playfair Display\', Georgia, serif;">Special Events</h3>';
     groups.special.forEach((event) => {
       const { date, time } = formatEventDateTime(event.event_date, event.event_time);
       html += `
-        <div style="padding: 15px; background: #f4ecf7; border-left: 4px solid #9b59b6; margin-bottom: 15px;">
-          <div style="font-weight: bold; font-size: 18px; color: #2c3e50; margin-bottom: 5px;">
+        <div style="padding: 15px; background: #D9EAD9; border-left: 4px solid #84AE88; margin-bottom: 15px;">
+          <div style="font-weight: 600; font-size: 18px; color: #1B2B38; margin-bottom: 5px; font-family: 'Playfair Display', Georgia, serif;">
             ${event.title}
           </div>
-          <div style="color: #7f8c8d; font-size: 14px; margin-bottom: 3px;">
+          <div style="color: #7A8C96; font-size: 14px; margin-bottom: 3px; font-family: 'Josefin Sans', sans-serif;">
             ${date} at ${time}
           </div>
-          ${event.admission ? `<div style="color: #27ae60; font-size: 14px; margin-bottom: 3px;">Admission: ${event.admission}</div>` : ''}
-          ${event.notes ? `<div style="color: #7f8c8d; font-size: 14px; margin-top: 8px;">${event.notes}</div>` : ''}
+          ${event.admission ? `<div style="color: #2E7A78; font-size: 14px; margin-bottom: 3px; font-family: 'Josefin Sans', sans-serif;">Admission: ${event.admission}</div>` : ''}
+          ${event.notes ? `<div style="color: #7A8C96; font-size: 14px; margin-top: 8px; font-family: 'Josefin Sans', sans-serif;">${event.notes}</div>` : ''}
         </div>
       `;
     });
@@ -510,17 +510,18 @@ function generateNewsletterHTML(nytMatches, newItems, events) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>This week at Sinclair Inlet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #ecf0f1;">
-  <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+<body style="margin: 0; padding: 0; font-family: 'Josefin Sans', 'Helvetica Neue', Arial, sans-serif; background-color: #F8F3EA;">
+  <div style="max-width: 600px; margin: 0 auto; background-color: #FDF9F3; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
 
     <!-- Header -->
-    <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #3498db;">
-      <h1 style="color: #2c3e50; margin: 0; font-size: 28px;">
+    <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #5AACAA;">
+      <h1 style="color: #1B2B38; margin: 0; font-size: 32px; font-family: 'Playfair Display', Georgia, serif; font-weight: 900;">
         Sinclair Inlet Book Co.
       </h1>
-      <p style="color: #7f8c8d; margin: 10px 0 0 0; font-size: 14px;">
-        Your weekly update from Bremerton's bookshop
+      <p style="color: #7A8C96; margin: 10px 0 0 0; font-size: 14px; font-family: 'Josefin Sans', sans-serif; text-transform: uppercase; letter-spacing: 0.1em;">
+        Your weekly update from Port Orchard's bookshop
       </p>
     </div>
 
@@ -530,13 +531,18 @@ function generateNewsletterHTML(nytMatches, newItems, events) {
     ${eventsSection}
 
     <!-- Footer -->
-    <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #ecf0f1; text-align: center; color: #95a5a6; font-size: 12px;">
-      <p style="margin: 0 0 10px 0;">
-        Sinclair Inlet Book Co.<br>
-        Bremerton, WA
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #E2D9CC; text-align: center; color: #7A8C96; font-size: 13px; font-family: 'Josefin Sans', sans-serif;">
+      <p style="margin: 0 0 15px 0; line-height: 1.6;">
+        <strong style="color: #1B2B38; font-size: 14px;">Sinclair Inlet Book Co.</strong><br>
+        821 Bay Street, Port Orchard, WA 98366<br>
+        <br>
+        <strong>Hours:</strong><br>
+        Tuesday-Friday 11-4<br>
+        Saturday 11-5 | Sunday 12-4<br>
+        Closed Monday
       </p>
-      <p style="margin: 0;">
-        <a href="${unsubscribeLink}" style="color: #3498db; text-decoration: none;">Unsubscribe</a>
+      <p style="margin: 15px 0 0 0;">
+        <a href="${unsubscribeLink}" style="color: #5AACAA; text-decoration: none; font-weight: 600;">Unsubscribe</a>
       </p>
     </div>
 
