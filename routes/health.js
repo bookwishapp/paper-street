@@ -34,8 +34,6 @@ router.get('/health', async (req, res) => {
         SELECT MAX(created_at) as last_sync
         FROM subscribers
         WHERE source = 'square'
-        ORDER BY created_at DESC
-        LIMIT 1
       `);
       health.lastSync.square = squareSyncResult.rows[0]?.last_sync || null;
     } catch (error) {
