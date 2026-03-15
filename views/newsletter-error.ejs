@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error - Paper Street Thrift</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #F8F3EA;
+      color: #1B2B38;
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 60px auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(27, 43, 56, 0.08);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1B2B38 0%, #2A3A48 100%);
+      padding: 40px 30px;
+      text-align: center;
+      color: white;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 16px;
+      opacity: 0.95;
+    }
+
+    .content {
+      padding: 40px 30px;
+    }
+
+    .error-icon {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .error-icon svg {
+      width: 80px;
+      height: 80px;
+      fill: #E07E6A;
+    }
+
+    .message {
+      font-size: 18px;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #1B2B38;
+    }
+
+    .details {
+      background: #F8F3EA;
+      border-left: 4px solid #E07E6A;
+      padding: 20px;
+      margin: 30px 0;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .details p {
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    .details p:last-child {
+      margin-bottom: 0;
+    }
+
+    .contact {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 1px solid #F8F3EA;
+    }
+
+    .contact p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .contact a {
+      color: #5AACAA;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .contact a:hover {
+      text-decoration: underline;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px;
+      background: #F8F3EA;
+      font-size: 14px;
+      color: #1B2B38;
+    }
+
+    .footer p {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Oops!</h1>
+      <p>Something went wrong</p>
+    </div>
+
+    <div class="content">
+      <div class="error-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+      </div>
+
+      <div class="message">
+        <p><strong>We encountered an issue</strong></p>
+      </div>
+
+      <div class="details">
+        <p><%= message %></p>
+      </div>
+
+      <div class="contact">
+        <p>Need help? Feel free to reach out to us.</p>
+        <p>Email: <a href="mailto:hello@paperstreetthrift.com">hello@paperstreetthrift.com</a></p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p><strong>Paper Street Thrift</strong></p>
+      <p>Quality secondhand goods with character</p>
+    </div>
+  </div>
+</body>
+</html>

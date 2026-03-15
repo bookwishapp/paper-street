@@ -1,8 +1,65 @@
 const express = require('express');
 const path = require('path');
+const session = require('express-session');
+const cors = require('cors');
+require('dotenv').config();
+
+// Import routes
+const newsletterRoutes = require('./routes/newsletter');
+const eventsAdmin = require('./routes/eventsAdmin');
+const healthRoutes = require('./routes/health');
+const contentApiRoutes = require('./routes/contentApi');
+
+// Import and initialize scheduler
+const { initializeScheduler } = require('./scheduler');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Set up view engine for EJS templates
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Parse URL-encoded bodies (for POST requests)
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Session middleware for admin authentication
+app.use(session({
+  secret: process.env.ADMIN_PASSWORD || 'default-secret-change-me',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
+// Health and API routes
+app.use(healthRoutes);
+
+// Apply CORS to public API endpoints only
+app.use('/api/content', cors({
+  origin: true, // Allow all origins
+  credentials: false,
+  methods: ['GET', 'OPTIONS'],
+  optionsSuccessStatus: 200
+}), contentApiRoutes);
+
+// Apply CORS to public events API
+app.use('/api/events', cors({
+  origin: true,
+  credentials: false,
+  methods: ['GET', 'OPTIONS'],
+  optionsSuccessStatus: 200
+}));
+
+// Newsletter routes
+app.use('/newsletter', newsletterRoutes);
+
+// Events admin routes
+app.use('/', eventsAdmin);
 
 // Middleware to serve different content based on domain
 app.use((req, res, next) => {
@@ -44,4 +101,8 @@ app.listen(PORT, () => {
   console.log(`Multi-site server is running on port ${PORT}`);
   console.log(`Main site: sinclair-inlet/`);
   console.log(`Paper Street site: paper-street/`);
+
+  // Initialize cron scheduler
+  console.log('Initializing newsletter system scheduler...');
+  initializeScheduler();
 });

@@ -10,6 +10,18 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "@aws-sdk/client-ses": "^3.1009.0",
+    "axios": "^1.13.6",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.19.0",
+    "juice": "^11.1.1",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.2",
+    "pg": "^8.20.0",
+    "uuid": "^13.0.0"
   }
 }
