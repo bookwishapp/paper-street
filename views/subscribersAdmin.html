@@ -48,10 +48,52 @@
             font-size: 1.1rem;
         }
 
+        /* Navigation Bar */
+        .admin-nav {
+            background: var(--surface);
+            border-bottom: 2px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: -2rem -2rem 2rem -2rem;
+        }
+
+        .admin-nav-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--ink);
+        }
+
+        .admin-nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .admin-nav-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.2s;
+            padding: 0.5rem 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .admin-nav-link:hover {
+            color: var(--ink);
+        }
+
+        .admin-nav-link.active {
+            color: var(--ink);
+            border-bottom-color: var(--teal);
+            font-weight: bold;
+        }
+
         .logout-btn {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
             background: var(--rose);
             color: white;
             border: none;
@@ -412,14 +454,24 @@
                 padding: 1rem;
             }
 
-            h1 {
-                font-size: 2rem;
+            .admin-nav {
+                margin: -1rem -1rem 1rem -1rem;
+                padding: 1rem;
             }
 
-            .logout-btn {
-                position: static;
-                margin-bottom: 1rem;
+            .admin-nav-brand {
+                font-size: 1.25rem;
+            }
+
+            .admin-nav-links {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
                 width: 100%;
+            }
+
+            h1 {
+                font-size: 2rem;
             }
 
             .filter-tabs {
@@ -462,7 +514,17 @@
     </style>
 </head>
 <body>
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <!-- Admin Navigation Bar -->
+    <nav class="admin-nav">
+        <div class="admin-nav-brand">Admin Dashboard</div>
+        <div class="admin-nav-links">
+            <a href="/admin" class="admin-nav-link">Dashboard</a>
+            <a href="/admin/events" class="admin-nav-link">Events</a>
+            <a href="/admin/subscribers" class="admin-nav-link active">Subscribers</a>
+            <a href="/admin/newsletter" class="admin-nav-link">Newsletter</a>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
 
     <div class="container">
         <h1>Subscribers Admin</h1>
@@ -912,9 +974,10 @@
         async function logout() {
             try {
                 await fetch('/admin/logout', { method: 'POST' });
-                window.location.href = '/';
+                window.location.href = '/admin/login';
             } catch (error) {
                 console.error('Error logging out:', error);
+                window.location.href = '/admin/login';
             }
         }
 

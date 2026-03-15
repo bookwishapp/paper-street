@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Paper Street Thrift</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #F8F3EA;
+            --surface: #FDF9F3;
+            --teal: #5AACAA;
+            --rose: #E07E6A;
+            --butter: #EAC45A;
+            --sage: #84AE88;
+            --ink: #1B2B38;
+            --muted: #7A8C96;
+            --border: #E2D9CC;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: var(--bg);
+            color: var(--ink);
+            line-height: 1.6;
+        }
+
+        /* Navigation Bar */
+        .admin-nav {
+            background: var(--surface);
+            border-bottom: 2px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .admin-nav-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--ink);
+        }
+
+        .admin-nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .admin-nav-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.2s;
+            padding: 0.5rem 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .admin-nav-link:hover {
+            color: var(--ink);
+        }
+
+        .admin-nav-link.active {
+            color: var(--ink);
+            border-bottom-color: var(--teal);
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: var(--rose);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Georgia', serif;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Dashboard Cards Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .dashboard-card {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-color: var(--teal);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        .card-count {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-description {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        /* Color variants for cards */
+        .dashboard-card.events {
+            border-left: 4px solid var(--butter);
+        }
+
+        .dashboard-card.subscribers {
+            border-left: 4px solid var(--teal);
+        }
+
+        .dashboard-card.newsletter {
+            border-left: 4px solid var(--sage);
+        }
+
+        /* Loading state */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+        }
+
+        .section {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--ink);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .welcome-text {
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            .admin-nav {
+                padding: 1rem;
+            }
+
+            .admin-nav-brand {
+                font-size: 1.25rem;
+            }
+
+            .admin-nav-links {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+                width: 100%;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Navigation Bar -->
+    <nav class="admin-nav">
+        <div class="admin-nav-brand">Admin Dashboard</div>
+        <div class="admin-nav-links">
+            <a href="/admin" class="admin-nav-link active">Dashboard</a>
+            <a href="/admin/events" class="admin-nav-link">Events</a>
+            <a href="/admin/subscribers" class="admin-nav-link">Subscribers</a>
+            <a href="/admin/newsletter" class="admin-nav-link">Newsletter</a>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <p class="subtitle">Welcome to the Paper Street Thrift admin dashboard</p>
+
+        <!-- Dashboard Cards -->
+        <div class="dashboard-grid" id="dashboard-grid">
+            <div class="loading">Loading dashboard...</div>
+        </div>
+
+        <!-- Quick Links Section -->
+        <div class="section">
+            <h2>Quick Links</h2>
+            <div class="welcome-text">
+                <p style="margin-bottom: 1rem;">
+                    Use the cards above to navigate to each admin section, or use the navigation menu at the top of the page.
+                </p>
+                <ul style="list-style-position: inside; color: var(--muted);">
+                    <li>Manage upcoming events and create new ones</li>
+                    <li>View and manage newsletter subscribers</li>
+                    <li>Send newsletters and view newsletter history</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load dashboard statistics on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboardStats();
+        });
+
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('/api/admin/dashboard/stats');
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch dashboard stats');
+                }
+
+                const stats = await response.json();
+                displayDashboard(stats);
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                document.getElementById('dashboard-grid').innerHTML =
+                    '<div class="loading" style="color: var(--rose);">Error loading dashboard. Please refresh the page.</div>';
+            }
+        }
+
+        function displayDashboard(stats) {
+            const grid = document.getElementById('dashboard-grid');
+
+            // Format last newsletter date
+            let lastNewsletterText = 'Never';
+            if (stats.lastNewsletterDate) {
+                const date = new Date(stats.lastNewsletterDate);
+                lastNewsletterText = date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+
+            grid.innerHTML = `
+                <a href="/admin/events" class="dashboard-card events">
+                    <div class="card-icon">📅</div>
+                    <div class="card-title">Events</div>
+                    <div class="card-count">${stats.upcomingEvents}</div>
+                    <div class="card-description">Upcoming events scheduled</div>
+                </a>
+
+                <a href="/admin/subscribers" class="dashboard-card subscribers">
+                    <div class="card-icon">👥</div>
+                    <div class="card-title">Subscribers</div>
+                    <div class="card-count">${stats.subscribersCount}</div>
+                    <div class="card-description">Active newsletter subscribers</div>
+                </a>
+
+                <a href="/admin/newsletter" class="dashboard-card newsletter">
+                    <div class="card-icon">📧</div>
+                    <div class="card-title">Newsletter</div>
+                    <div class="card-count">${stats.newslettersSent}</div>
+                    <div class="card-description">Newsletters sent | Last: ${lastNewsletterText}</div>
+                </a>
+            `;
+        }
+
+        async function logout() {
+            try {
+                await fetch('/admin/logout', { method: 'POST' });
+                window.location.href = '/admin/login';
+            } catch (error) {
+                console.error('Error logging out:', error);
+                window.location.href = '/admin/login';
+            }
+        }
+    </script>
+</body>
+</html>

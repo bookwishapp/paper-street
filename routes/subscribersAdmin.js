@@ -1,93 +1,49 @@
 const express = require('express');
 const router = express.Router();
-const session = require('express-session');
 const path = require('path');
 const subscriberService = require('../services/subscriberService');
-
-// Session middleware - only for subscriber admin routes
-const sessionMiddleware = session({
-  secret: process.env.SESSION_SECRET || 'paper-street-subscribers-secret-key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 // 24 hours
-  }
-});
-
-// Authentication middleware
-const requireAuth = (req, res, next) => {
-  if (req.session && req.session.subscribersAuthenticated) {
-    next();
-  } else {
-    // Check if it's an HTML request or API request
-    const isApiRequest = req.path.startsWith('/api/') ||
-                        (req.headers.accept && req.headers.accept.includes('application/json'));
-    if (isApiRequest) {
-      res.status(401).json({ error: 'Unauthorized' });
-    } else {
-      res.redirect('/admin/subscribers/login');
-    }
-  }
-};
+const {
+  sessionMiddleware,
+  requireAuth
+} = require('../middleware/adminAuth');
 
 // Apply session middleware to all routes
 router.use(sessionMiddleware);
 
 // ============================================================================
-// Authentication Routes
-// ============================================================================
-
-// GET /admin/subscribers/login - Render login page
-router.get('/admin/subscribers/login', (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/subscribersLogin.html'));
-});
-
-// POST /admin/subscribers/login - Handle login
-router.post('/admin/subscribers/login', async (req, res) => {
-  try {
-    const { password } = req.body;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-
-    if (!adminPassword) {
-      return res.status(500).json({ error: 'Admin password not configured' });
-    }
-
-    if (password === adminPassword) {
-      req.session.subscribersAuthenticated = true;
-      res.json({ success: true });
-    } else {
-      res.status(401).json({ error: 'Invalid password' });
-    }
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Login failed' });
-  }
-});
-
-// POST /admin/subscribers/logout - Handle logout
-router.post('/admin/subscribers/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ error: 'Logout failed' });
-    }
-    res.json({ success: true });
-  });
-});
-
-// GET /admin/subscribers/check-auth - Check authentication status
-router.get('/admin/subscribers/check-auth', (req, res) => {
-  res.json({ authenticated: !!req.session.subscribersAuthenticated });
-});
-
-// ============================================================================
 // Admin Page Routes (HTML)
 // ============================================================================
 
+// Legacy route redirects
+router.get('/admin/subscribers/login', (req, res) => {
+  res.redirect('/admin/login');
+});
+
+router.post('/admin/subscribers/login', (req, res) => {
+  res.redirect(307, '/admin/login');
+});
+
+router.post('/admin/subscribers/logout', (req, res) => {
+  res.redirect(307, '/admin/logout');
+});
+
 // GET /admin/subscribers - Main admin interface (password protected)
-router.get('/admin/subscribers', requireAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/subscribersAdmin.html'));
+router.get('/admin/subscribers', requireAuth, async (req, res) => {
+  // Check if this is an API request for JSON data
+  const wantsJson = req.headers.accept && req.headers.accept.includes('application/json');
+
+  if (wantsJson) {
+    try {
+      const result = await subscriberService.getSubscribers();
+      res.json(result);
+    } catch (error) {
+      console.error('Error fetching subscribers:', error);
+      res.status(500).json({ error: 'Failed to fetch subscribers' });
+    }
+  } else {
+    // Return HTML page
+    res.sendFile(path.join(__dirname, '../views/subscribersAdmin.html'));
+  }
 });
 
 // ============================================================================

@@ -6,6 +6,7 @@ require('dotenv').config();
 
 // Import routes
 const newsletterRoutes = require('./routes/newsletter');
+const adminDashboard = require('./routes/adminDashboard');
 const newsletterAdmin = require('./routes/newsletterAdmin');
 const eventsAdmin = require('./routes/eventsAdmin');
 const subscribersAdmin = require('./routes/subscribersAdmin');
@@ -59,6 +60,9 @@ app.use('/api/events', cors({
 
 // Newsletter routes
 app.use('/newsletter', newsletterRoutes);
+
+// Unified admin dashboard (must be first to handle /admin and /admin/login)
+app.use('/', adminDashboard);
 
 // Newsletter admin routes
 app.use('/', newsletterAdmin);

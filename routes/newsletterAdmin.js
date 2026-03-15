@@ -1,80 +1,36 @@
 const express = require('express');
 const router = express.Router();
-const session = require('express-session');
 const path = require('path');
 const newsletterService = require('../services/newsletterService');
 const { generatePreview } = require('../services/newsletterGenerator');
-
-// Session middleware - only for admin routes
-const sessionMiddleware = session({
-  secret: process.env.SESSION_SECRET || 'paper-street-newsletter-secret-key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24, // 24 hours
-  },
-});
-
-// Authentication middleware
-const requireAuth = (req, res, next) => {
-  if (req.session && req.session.newsletterAuthenticated) {
-    next();
-  } else {
-    const isApiRequest = req.headers.accept && req.headers.accept.includes('application/json');
-    if (isApiRequest) {
-      res.status(401).json({ error: 'Unauthorized' });
-    } else {
-      res.redirect('/admin/newsletter/login');
-    }
-  }
-};
+const {
+  sessionMiddleware,
+  requireAuth,
+  handleLogin,
+  handleLogout,
+  checkAuth
+} = require('../middleware/adminAuth');
 
 // Apply session middleware to all routes
 router.use(sessionMiddleware);
 
-// GET /admin/newsletter/login - Login page
+// GET /admin/newsletter/login - Redirect to unified login
 router.get('/admin/newsletter/login', (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/newsletterLogin.html'));
+  res.redirect('/admin/login');
 });
 
-// POST /admin/newsletter/login - Handle login
-router.post('/admin/newsletter/login', async (req, res) => {
-  try {
-    const { password } = req.body;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-
-    if (!adminPassword) {
-      return res.status(500).json({ error: 'Admin password not configured' });
-    }
-
-    if (password === adminPassword) {
-      req.session.newsletterAuthenticated = true;
-      res.json({ success: true });
-    } else {
-      res.status(401).json({ error: 'Invalid password' });
-    }
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Login failed' });
-  }
+// POST /admin/newsletter/login - Redirect to unified login handler
+router.post('/admin/newsletter/login', (req, res) => {
+  res.redirect(307, '/admin/login');
 });
 
-// POST /admin/newsletter/logout - Handle logout
+// POST /admin/newsletter/logout - Redirect to unified logout
 router.post('/admin/newsletter/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ error: 'Logout failed' });
-    }
-    res.json({ success: true });
-  });
+  res.redirect(307, '/admin/logout');
 });
 
-// GET /admin/newsletter/check-auth - Check authentication status
-router.get('/admin/newsletter/check-auth', (req, res) => {
-  res.json({ authenticated: !!req.session.newsletterAuthenticated });
-});
+// GET /admin/newsletter/check-auth - Use unified auth check
+router.get('/admin/newsletter/check-auth', checkAuth);
 
 // GET /admin/newsletter - Main admin interface (requires auth)
 router.get('/admin/newsletter', requireAuth, (req, res) => {

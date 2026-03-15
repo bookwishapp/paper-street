@@ -22,9 +22,9 @@ router.post('/admin/logout', handleLogout);
 // Check auth status
 router.get('/admin/check-auth', checkAuth);
 
-// GET /admin/events/login - Render login page
+// GET /admin/events/login - Redirect to unified login
 router.get('/admin/events/login', (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/eventsLogin.html'));
+  res.redirect('/admin/login');
 });
 
 // GET /admin/events - Render admin page (password protected)

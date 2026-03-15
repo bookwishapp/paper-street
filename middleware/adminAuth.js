@@ -25,7 +25,7 @@ const sessionMiddleware = session(sessionConfig);
  * Redirects to login page or returns 401 for API requests
  */
 const requireAuth = (req, res, next) => {
-  if (req.session && req.session.authenticated) {
+  if (req.session && req.session.isAdmin) {
     next();
   } else {
     // Check if it's an HTML request or API request
@@ -33,7 +33,7 @@ const requireAuth = (req, res, next) => {
     if (isApiRequest) {
       res.status(401).json({ error: 'Unauthorized' });
     } else {
-      res.redirect('/admin/events/login');
+      res.redirect('/admin/login');
     }
   }
 };
@@ -52,7 +52,7 @@ const handleLogin = async (req, res) => {
     }
 
     if (password === adminPassword) {
-      req.session.authenticated = true;
+      req.session.isAdmin = true;
       res.json({ success: true });
     } else {
       res.status(401).json({ error: 'Invalid password' });
@@ -81,7 +81,7 @@ const handleLogout = (req, res) => {
  * Returns current auth state
  */
 const checkAuth = (req, res) => {
-  res.json({ authenticated: !!req.session.authenticated });
+  res.json({ authenticated: !!req.session.isAdmin });
 };
 
 module.exports = {
