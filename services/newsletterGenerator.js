@@ -660,6 +660,73 @@ async function writeToContentCache(cacheKey, data) {
 }
 
 /**
+ * Generate newsletter content (data only, no sending)
+ * @returns {Object} - Newsletter content data
+ */
+async function generateNewsletterContent() {
+  try {
+    // Fetch all data
+    const nytBooks = await fetchNYTBestsellers();
+    const squareCatalog = await fetchSquareCatalog();
+    const nytMatches = matchBestsellersWithInventory(nytBooks, squareCatalog);
+    const newItems = await fetchNewSquareItems();
+    const events = await fetchUpcomingEvents();
+
+    return {
+      nytMatches,
+      newItems,
+      events,
+      hasContent: nytMatches.length > 0 || newItems.length > 0 || events.length > 0,
+    };
+  } catch (error) {
+    console.error('Error generating newsletter content:', error);
+    throw error;
+  }
+}
+
+/**
+ * Generate preview of newsletter without sending
+ * @returns {Object} - Preview data with HTML and metadata
+ */
+async function generatePreview() {
+  try {
+    const content = await generateNewsletterContent();
+    const { nytMatches, newItems, events, hasContent } = content;
+
+    if (!hasContent) {
+      return {
+        hasContent: false,
+        subject: getNewsletterSubject(),
+        htmlBody: '',
+        message: 'No content available for newsletter',
+        stats: {
+          nytBooks: 0,
+          newItems: 0,
+          events: 0,
+        },
+      };
+    }
+
+    const htmlBody = generateNewsletterHTML(nytMatches, newItems, events);
+    const subject = getNewsletterSubject();
+
+    return {
+      hasContent: true,
+      subject,
+      htmlBody,
+      stats: {
+        nytBooks: nytMatches.length,
+        newItems: newItems.length,
+        events: events.length,
+      },
+    };
+  } catch (error) {
+    console.error('Error generating preview:', error);
+    throw error;
+  }
+}
+
+/**
  * Main newsletter generator function
  */
 async function runNewsletterGenerator() {
@@ -874,4 +941,6 @@ if (require.main === module) {
 
 module.exports = {
   runNewsletterGenerator,
+  generatePreview,
+  generateNewsletterContent,
 };

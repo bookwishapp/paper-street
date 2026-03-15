@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter Admin - Sinclair Inlet Book Co.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #F8F3EA;
+            --surface: #FDF9F3;
+            --teal: #5AACAA;
+            --rose: #E07E6A;
+            --butter: #EAC45A;
+            --sage: #84AE88;
+            --ink: #1B2B38;
+            --muted: #7A8C96;
+            --border: #E2D9CC;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: var(--bg);
+            color: var(--ink);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: var(--rose);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.9;
+        }
+
+        .section {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--ink);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            color: var(--muted);
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--ink);
+        }
+
+        .tab-btn.active {
+            color: var(--ink);
+            border-bottom-color: var(--teal);
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Buttons */
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Georgia', serif;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--teal);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--muted);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--rose);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--sage);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--butter);
+            color: var(--ink);
+        }
+
+        /* Form Elements */
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Georgia', serif;
+            background: white;
+            color: var(--ink);
+            width: 100%;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        /* Statistics Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg);
+            font-weight: bold;
+            color: var(--ink);
+        }
+
+        tr:hover {
+            background: #FAFAFA;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status-sent {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-scheduled {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-draft {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .status-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Preview Frame */
+        .preview-frame {
+            width: 100%;
+            height: 600px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            background: white;
+        }
+
+        /* Message */
+        .message {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--muted);
+        }
+
+        /* Send Controls */
+        .send-controls {
+            background: #E8F4F8;
+            border: 2px solid var(--teal);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .send-controls h3 {
+            margin-bottom: 1rem;
+            color: var(--ink);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .pagination span {
+            color: var(--muted);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .logout-btn {
+                position: static;
+                margin-bottom: 1rem;
+                width: 100%;
+            }
+
+            .tab-nav {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+                text-align: left;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons button {
+                width: 100%;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+
+    <div class="container">
+        <h1>Newsletter Admin</h1>
+        <p class="subtitle">Manage newsletters for Sinclair Inlet Book Co.</p>
+
+        <div id="message" class="message"></div>
+
+        <div class="section">
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab('history')">History</button>
+                <button class="tab-btn" onclick="switchTab('preview')">Preview</button>
+                <button class="tab-btn" onclick="switchTab('send')">Send</button>
+                <button class="tab-btn" onclick="switchTab('custom')">Custom</button>
+                <button class="tab-btn" onclick="switchTab('statistics')">Statistics</button>
+            </div>
+
+            <!-- History Tab -->
+            <div id="tab-history" class="tab-content active">
+                <h2>Newsletter History</h2>
+                <div id="history-list" class="loading">
+                    Loading history...
+                </div>
+                <div class="pagination" id="history-pagination" style="display: none;">
+                    <button class="btn-secondary" id="history-prev-btn" onclick="previousHistoryPage()">Previous</button>
+                    <span id="history-page-info">Page 1 of 1</span>
+                    <button class="btn-secondary" id="history-next-btn" onclick="nextHistoryPage()">Next</button>
+                </div>
+            </div>
+
+            <!-- Preview Tab -->
+            <div id="tab-preview" class="tab-content">
+                <h2>Preview Next Newsletter</h2>
+                <div class="action-buttons" style="margin-bottom: 1rem;">
+                    <button class="btn-primary" onclick="refreshPreview()">Refresh Preview</button>
+                </div>
+                <iframe id="preview-frame" class="preview-frame"></iframe>
+            </div>
+
+            <!-- Send Tab -->
+            <div id="tab-send" class="tab-content">
+                <h2>Send Newsletter</h2>
+
+                <div class="send-controls">
+                    <h3>Test Send</h3>
+                    <p style="margin-bottom: 1rem; color: var(--muted);">
+                        Send a test newsletter to verify everything looks correct before sending to all subscribers.
+                    </p>
+                    <div class="form-group">
+                        <label for="test-email">Test Email Address</label>
+                        <input type="email" id="test-email" placeholder="your@email.com">
+                    </div>
+                    <button class="btn-warning" onclick="sendTestNewsletter()">Send Test Newsletter</button>
+                </div>
+
+                <div class="send-controls">
+                    <h3>Send to All Subscribers</h3>
+                    <p style="margin-bottom: 1rem; color: var(--muted);">
+                        This will send the newsletter to all subscribed users. This action cannot be undone.
+                    </p>
+                    <div id="send-info" style="margin-bottom: 1rem;">
+                        <div><strong>Subscribed count:</strong> <span id="subscriber-count">Loading...</span></div>
+                        <div><strong>Last sent:</strong> <span id="last-sent">Loading...</span></div>
+                    </div>
+                    <button class="btn-danger" onclick="sendNewsletter()" id="send-newsletter-btn">Send Newsletter Now</button>
+                </div>
+            </div>
+
+            <!-- Custom Tab -->
+            <div id="tab-custom" class="tab-content">
+                <h2>Create Custom Newsletter</h2>
+                <p style="margin-bottom: 1.5rem; color: var(--muted);">
+                    Create and send a custom newsletter with your own subject and content.
+                </p>
+
+                <form id="custom-newsletter-form">
+                    <div class="form-group">
+                        <label for="custom-subject">Subject Line</label>
+                        <input type="text" id="custom-subject" placeholder="Enter newsletter subject..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custom-html">HTML Content</label>
+                        <textarea id="custom-html" rows="15" placeholder="Enter HTML content for the newsletter..." required></textarea>
+                        <small style="color: var(--muted);">
+                            You can use HTML to format your newsletter. Include inline styles for best email client compatibility.
+                        </small>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button" class="btn-warning" onclick="previewCustomNewsletter()">Preview Custom Newsletter</button>
+                        <button type="button" class="btn-primary" onclick="sendTestCustomNewsletter()">Send Test</button>
+                        <button type="submit" class="btn-danger">Send to All Subscribers</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Statistics Tab -->
+            <div id="tab-statistics" class="tab-content">
+                <h2>Newsletter Statistics</h2>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-total-sent">0</div>
+                        <div class="stat-label">Total Sent</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-total-subscribers">0</div>
+                        <div class="stat-label">Active Subscribers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-last-sent-date">-</div>
+                        <div class="stat-label">Last Sent Date</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-avg-per-month">0</div>
+                        <div class="stat-label">Avg. Per Month</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Monthly Breakdown</h3>
+                <div id="monthly-stats" class="loading">
+                    Loading statistics...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'history';
+        let newsletterHistory = [];
+        let historyPage = 1;
+        const historyItemsPerPage = 10;
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHistory();
+            loadStatistics();
+            loadSubscriberCount();
+        });
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            // Load tab-specific data
+            if (tabName === 'preview') {
+                loadPreview();
+            } else if (tabName === 'statistics') {
+                loadStatistics();
+            } else if (tabName === 'send') {
+                loadSubscriberCount();
+            }
+        }
+
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/admin/newsletter/log?page=1&limit=100');
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch history');
+                }
+
+                const data = await response.json();
+                newsletterHistory = data.newsletters || [];
+                displayHistory();
+            } catch (error) {
+                console.error('Error loading history:', error);
+                document.getElementById('history-list').innerHTML =
+                    '<div class="empty-state">Error loading history. Please refresh the page.</div>';
+            }
+        }
+
+        function displayHistory() {
+            const container = document.getElementById('history-list');
+            const start = (historyPage - 1) * historyItemsPerPage;
+            const end = start + historyItemsPerPage;
+            const pageItems = newsletterHistory.slice(start, end);
+
+            if (newsletterHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>No newsletters sent yet</p>
+                    </div>
+                `;
+                document.getElementById('history-pagination').style.display = 'none';
+                return;
+            }
+
+            const totalPages = Math.ceil(newsletterHistory.length / historyItemsPerPage);
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date Sent</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Subscribers</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${pageItems.map(newsletter => `
+                            <tr>
+                                <td>${formatDateTime(newsletter.sent_at)}</td>
+                                <td>${escapeHtml(newsletter.subject || 'Monthly Newsletter')}</td>
+                                <td><span class="status-badge status-sent">Sent</span></td>
+                                <td>${newsletter.subscriber_count || '-'}</td>
+                                <td>
+                                    <button class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="viewNewsletterPreview('${newsletter.id}')">View</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            // Update pagination
+            if (totalPages > 1) {
+                document.getElementById('history-pagination').style.display = 'flex';
+                document.getElementById('history-page-info').textContent = `Page ${historyPage} of ${totalPages}`;
+                document.getElementById('history-prev-btn').disabled = historyPage === 1;
+                document.getElementById('history-next-btn').disabled = historyPage === totalPages;
+            } else {
+                document.getElementById('history-pagination').style.display = 'none';
+            }
+        }
+
+        function previousHistoryPage() {
+            if (historyPage > 1) {
+                historyPage--;
+                displayHistory();
+            }
+        }
+
+        function nextHistoryPage() {
+            const totalPages = Math.ceil(newsletterHistory.length / historyItemsPerPage);
+            if (historyPage < totalPages) {
+                historyPage++;
+                displayHistory();
+            }
+        }
+
+        async function loadPreview() {
+            const iframe = document.getElementById('preview-frame');
+            iframe.srcdoc = '<div style="text-align: center; padding: 2rem; color: #7A8C96;">Loading preview...</div>';
+
+            try {
+                const response = await fetch('/api/admin/newsletter/preview');
+
+                if (!response.ok) {
+                    throw new Error('Failed to load preview');
+                }
+
+                const data = await response.json();
+                if (data.hasContent) {
+                    iframe.srcdoc = data.htmlBody;
+                } else {
+                    iframe.srcdoc = '<div style="text-align: center; padding: 2rem; color: #7A8C96;">No content available for newsletter</div>';
+                }
+            } catch (error) {
+                console.error('Error loading preview:', error);
+                iframe.srcdoc = '<div style="text-align: center; padding: 2rem; color: #E07E6A;">Error loading preview</div>';
+            }
+        }
+
+        function refreshPreview() {
+            loadPreview();
+            showMessage('Preview refreshed', 'success');
+        }
+
+        async function loadSubscriberCount() {
+            try {
+                const response = await fetch('/api/admin/newsletter/stats');
+
+                if (!response.ok) {
+                    throw new Error('Failed to load stats');
+                }
+
+                const data = await response.json();
+                document.getElementById('subscriber-count').textContent = data.currentSubscribers;
+
+                if (data.lastSent) {
+                    document.getElementById('last-sent').textContent = formatDate(data.lastSent.send_date);
+                } else {
+                    document.getElementById('last-sent').textContent = 'Never';
+                }
+            } catch (error) {
+                console.error('Error loading subscriber count:', error);
+                document.getElementById('subscriber-count').textContent = 'Error';
+                document.getElementById('last-sent').textContent = 'Error';
+            }
+        }
+
+        async function sendTestNewsletter() {
+            const email = document.getElementById('test-email').value.trim();
+
+            if (!email) {
+                showMessage('Please enter a test email address', 'error');
+                return;
+            }
+
+            if (!confirm(`Send test newsletter to ${email}?`)) {
+                return;
+            }
+
+            try {
+                // First get preview
+                const previewResponse = await fetch('/api/admin/newsletter/preview');
+                const previewData = await previewResponse.json();
+
+                if (!previewData.hasContent) {
+                    showMessage('No content available for newsletter', 'error');
+                    return;
+                }
+
+                const response = await fetch('/api/admin/newsletter/send-test', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, previewData })
+                });
+
+                if (response.ok) {
+                    showMessage(`Test newsletter sent to ${email}`, 'success');
+                } else {
+                    const error = await response.json();
+                    showMessage('Error: ' + (error.error || 'Failed to send test newsletter'), 'error');
+                }
+            } catch (error) {
+                console.error('Error sending test newsletter:', error);
+                showMessage('Error: Failed to send test newsletter', 'error');
+            }
+        }
+
+        async function sendNewsletter() {
+            const subscriberCount = document.getElementById('subscriber-count').textContent;
+
+            if (!confirm(`Send newsletter to ${subscriberCount} subscribers? This action cannot be undone.`)) {
+                return;
+            }
+
+            const sendBtn = document.getElementById('send-newsletter-btn');
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Sending...';
+
+            try {
+                // First get preview
+                const previewResponse = await fetch('/api/admin/newsletter/preview');
+                const newsletterData = await previewResponse.json();
+
+                if (!newsletterData.hasContent) {
+                    showMessage('No content available for newsletter', 'error');
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'Send Newsletter Now';
+                    return;
+                }
+
+                const response = await fetch('/api/admin/newsletter/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ force: false, newsletterData })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showMessage(`Newsletter sent successfully to ${data.sent || subscriberCount} subscribers!`, 'success');
+                    loadHistory();
+                    loadSubscriberCount();
+                } else if (response.status === 409) {
+                    const data = await response.json();
+                    showMessage('Warning: ' + (data.message || 'Newsletter already sent today'), 'error');
+                } else {
+                    const error = await response.json();
+                    showMessage('Error: ' + (error.error || 'Failed to send newsletter'), 'error');
+                }
+            } catch (error) {
+                console.error('Error sending newsletter:', error);
+                showMessage('Error: Failed to send newsletter', 'error');
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Send Newsletter Now';
+            }
+        }
+
+        // Custom Newsletter Functions
+        document.getElementById('custom-newsletter-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const subject = document.getElementById('custom-subject').value.trim();
+            const htmlBody = document.getElementById('custom-html').value.trim();
+
+            if (!subject || !htmlBody) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+
+            if (!confirm('Send this custom newsletter to all subscribers? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/newsletter/custom', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ subject, htmlBody })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showMessage(`Custom newsletter sent successfully to ${data.sent} subscribers!`, 'success');
+                    document.getElementById('custom-newsletter-form').reset();
+                    loadHistory();
+                } else {
+                    const error = await response.json();
+                    showMessage('Error: ' + (error.error || 'Failed to send custom newsletter'), 'error');
+                }
+            } catch (error) {
+                console.error('Error sending custom newsletter:', error);
+                showMessage('Error: Failed to send custom newsletter', 'error');
+            }
+        });
+
+        function previewCustomNewsletter() {
+            const html = document.getElementById('custom-html').value.trim();
+
+            if (!html) {
+                showMessage('Please enter HTML content first', 'error');
+                return;
+            }
+
+            switchTab('preview');
+            const iframe = document.getElementById('preview-frame');
+            iframe.srcdoc = html;
+        }
+
+        async function sendTestCustomNewsletter() {
+            const subject = document.getElementById('custom-subject').value.trim();
+            const htmlBody = document.getElementById('custom-html').value.trim();
+            const email = prompt('Enter test email address:');
+
+            if (!email) return;
+
+            if (!subject || !htmlBody) {
+                showMessage('Please fill in subject and HTML content first', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/newsletter/send-test', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        previewData: { subject, htmlBody }
+                    })
+                });
+
+                if (response.ok) {
+                    showMessage(`Test sent to ${email}`, 'success');
+                } else {
+                    const error = await response.json();
+                    showMessage('Error: ' + (error.error || 'Failed to send test'), 'error');
+                }
+            } catch (error) {
+                console.error('Error sending test:', error);
+                showMessage('Error: Failed to send test', 'error');
+            }
+        }
+
+        async function viewNewsletterPreview(id) {
+            switchTab('preview');
+            const iframe = document.getElementById('preview-frame');
+            iframe.srcdoc = '<div style="text-align: center; padding: 2rem; color: #7A8C96;">Loading newsletter...</div>';
+
+            try {
+                const response = await fetch(`/api/admin/newsletter/log/${id}`);
+
+                if (!response.ok) {
+                    throw new Error('Failed to load newsletter');
+                }
+
+                const data = await response.json();
+                iframe.srcdoc = data.html_body || '<div style="text-align: center; padding: 2rem; color: #7A8C96;">No content available</div>';
+            } catch (error) {
+                console.error('Error loading newsletter:', error);
+                iframe.srcdoc = '<div style="text-align: center; padding: 2rem; color: #E07E6A;">Error loading newsletter</div>';
+            }
+        }
+
+        async function loadStatistics() {
+            try {
+                const response = await fetch('/api/admin/newsletter/stats');
+
+                if (!response.ok) {
+                    throw new Error('Failed to load statistics');
+                }
+
+                const data = await response.json();
+
+                // Update stat cards
+                document.getElementById('stat-total-sent').textContent = data.sentNewsletters || 0;
+                document.getElementById('stat-total-subscribers').textContent = data.currentSubscribers || 0;
+                document.getElementById('stat-last-sent-date').textContent = data.lastSent ?
+                    formatDate(data.lastSent.send_date) : '-';
+                // Calculate avg per month from total sent
+                const avgPerMonth = data.sentNewsletters > 0 ? Math.round(data.sentNewsletters / 12) : 0;
+                document.getElementById('stat-avg-per-month').textContent = avgPerMonth;
+
+                // Display monthly breakdown - hide for now as we don't have monthly breakdown endpoint
+                const monthlyContainer = document.getElementById('monthly-stats');
+                monthlyContainer.innerHTML = '<div class="empty-state">Monthly breakdown not available</div>';
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+                document.getElementById('monthly-stats').innerHTML =
+                    '<div class="empty-state">Error loading statistics</div>';
+            }
+        }
+
+        async function logout() {
+            try {
+                await fetch('/admin/newsletter/logout', { method: 'POST' });
+                window.location.href = '/admin/newsletter/login';
+            } catch (error) {
+                console.error('Error logging out:', error);
+                window.location.href = '/admin/newsletter/login';
+            }
+        }
+
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type} show`;
+
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+            }, 5000);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

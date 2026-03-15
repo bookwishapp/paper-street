@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscribers Admin - Paper Street Thrift</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #F8F3EA;
+            --surface: #FDF9F3;
+            --teal: #5AACAA;
+            --rose: #E07E6A;
+            --butter: #EAC45A;
+            --sage: #84AE88;
+            --ink: #1B2B38;
+            --muted: #7A8C96;
+            --border: #E2D9CC;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: var(--bg);
+            color: var(--ink);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: var(--rose);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.9;
+        }
+
+        .section {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--ink);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Georgia', serif;
+            font-size: 0.95rem;
+        }
+
+        .filter-tab:hover {
+            border-color: var(--teal);
+        }
+
+        .filter-tab.active {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+
+        /* Search Bar */
+        .search-bar {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Georgia', serif;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Georgia', serif;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background: var(--teal);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--muted);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--rose);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--sage);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--butter);
+            color: var(--ink);
+        }
+
+        /* Bulk Actions Toolbar */
+        .bulk-actions {
+            background: #E8F4F8;
+            border: 2px solid var(--teal);
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .bulk-actions.show {
+            display: flex;
+        }
+
+        .bulk-actions-text {
+            flex: 1;
+            font-weight: bold;
+        }
+
+        .bulk-actions-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg);
+            font-weight: bold;
+            color: var(--ink);
+        }
+
+        tr:hover {
+            background: #FAFAFA;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status-subscribed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-unsubscribed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-dormant {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .status-bounced {
+            background: #f5c6cb;
+            color: #721c24;
+        }
+
+        /* Checkbox */
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .pagination span {
+            color: var(--muted);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            color: var(--ink);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--muted);
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+
+        .modal-close:hover {
+            color: var(--ink);
+        }
+
+        .history-item {
+            padding: 1rem;
+            border-left: 3px solid var(--border);
+            margin-bottom: 1rem;
+            background: white;
+        }
+
+        .history-date {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .history-event {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Message */
+        .message {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--muted);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .logout-btn {
+                position: static;
+                margin-bottom: 1rem;
+                width: 100%;
+            }
+
+            .filter-tabs {
+                flex-direction: column;
+            }
+
+            .filter-tab {
+                width: 100%;
+            }
+
+            .search-bar {
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons button {
+                width: 100%;
+            }
+
+            .bulk-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .bulk-actions-buttons {
+                flex-direction: column;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+
+    <div class="container">
+        <h1>Subscribers Admin</h1>
+        <p class="subtitle">Manage newsletter subscribers for Paper Street Thrift</p>
+
+        <div id="message" class="message"></div>
+
+        <div class="section">
+            <h2>Subscriber Management</h2>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-status="all" onclick="filterByStatus('all')">
+                    All <span id="count-all">0</span>
+                </button>
+                <button class="filter-tab" data-status="subscribed" onclick="filterByStatus('subscribed')">
+                    Subscribed <span id="count-subscribed">0</span>
+                </button>
+                <button class="filter-tab" data-status="pending" onclick="filterByStatus('pending')">
+                    Pending <span id="count-pending">0</span>
+                </button>
+                <button class="filter-tab" data-status="unsubscribed" onclick="filterByStatus('unsubscribed')">
+                    Unsubscribed <span id="count-unsubscribed">0</span>
+                </button>
+                <button class="filter-tab" data-status="dormant" onclick="filterByStatus('dormant')">
+                    Dormant <span id="count-dormant">0</span>
+                </button>
+                <button class="filter-tab" data-status="bounced" onclick="filterByStatus('bounced')">
+                    Bounced <span id="count-bounced">0</span>
+                </button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" class="search-input" id="search-input" placeholder="Search by email or name..." onkeyup="handleSearch()">
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-success" onclick="exportToCSV()">Export to CSV</button>
+            </div>
+
+            <!-- Bulk Actions Toolbar -->
+            <div class="bulk-actions" id="bulk-actions">
+                <div class="bulk-actions-text">
+                    <span id="selected-count">0</span> subscriber(s) selected
+                </div>
+                <div class="bulk-actions-buttons">
+                    <button class="btn-success" onclick="bulkUpdateStatus('subscribed')">Mark Subscribed</button>
+                    <button class="btn-warning" onclick="bulkUpdateStatus('pending')">Mark Pending</button>
+                    <button class="btn-secondary" onclick="bulkUpdateStatus('unsubscribed')">Unsubscribe</button>
+                    <button class="btn-danger" onclick="bulkUpdateStatus('bounced')">Mark Bounced</button>
+                    <button class="btn-secondary" onclick="clearSelection()">Clear Selection</button>
+                </div>
+            </div>
+
+            <!-- Subscribers Table -->
+            <div class="table-container">
+                <div id="subscribers-list" class="loading">
+                    Loading subscribers...
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination" style="display: none;">
+                <button class="btn-secondary" id="prev-btn" onclick="previousPage()">Previous</button>
+                <span id="page-info">Page 1 of 1</span>
+                <button class="btn-secondary" id="next-btn" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal" id="history-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Subscriber History</h3>
+                <button class="modal-close" onclick="closeHistoryModal()">&times;</button>
+            </div>
+            <div id="history-content">
+                Loading...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allSubscribers = [];
+        let filteredSubscribers = [];
+        let currentStatus = 'all';
+        let searchQuery = '';
+        let selectedSubscribers = new Set();
+        let currentPage = 1;
+        const itemsPerPage = 20;
+
+        // Load subscribers on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSubscribers();
+        });
+
+        async function loadSubscribers() {
+            try {
+                const response = await fetch('/admin/subscribers');
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch subscribers');
+                }
+
+                const data = await response.json();
+                allSubscribers = data.subscribers || [];
+                updateCounts();
+                filterByStatus(currentStatus);
+            } catch (error) {
+                console.error('Error loading subscribers:', error);
+                document.getElementById('subscribers-list').innerHTML =
+                    '<div class="empty-state">Error loading subscribers. Please refresh the page.</div>';
+            }
+        }
+
+        function updateCounts() {
+            const counts = {
+                all: allSubscribers.length,
+                subscribed: 0,
+                pending: 0,
+                unsubscribed: 0,
+                dormant: 0,
+                bounced: 0
+            };
+
+            allSubscribers.forEach(sub => {
+                if (counts[sub.status] !== undefined) {
+                    counts[sub.status]++;
+                }
+            });
+
+            Object.keys(counts).forEach(status => {
+                const el = document.getElementById(`count-${status}`);
+                if (el) el.textContent = counts[status];
+            });
+        }
+
+        function filterByStatus(status) {
+            currentStatus = status;
+            currentPage = 1;
+
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.filter-tab[data-status="${status}"]`).classList.add('active');
+
+            // Filter subscribers
+            if (status === 'all') {
+                filteredSubscribers = allSubscribers;
+            } else {
+                filteredSubscribers = allSubscribers.filter(sub => sub.status === status);
+            }
+
+            // Apply search if active
+            if (searchQuery) {
+                applySearch();
+            }
+
+            displaySubscribers();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+            currentPage = 1;
+            applySearch();
+            displaySubscribers();
+        }
+
+        function applySearch() {
+            if (!searchQuery) {
+                filterByStatus(currentStatus);
+                return;
+            }
+
+            const baseList = currentStatus === 'all' ? allSubscribers :
+                allSubscribers.filter(sub => sub.status === currentStatus);
+
+            filteredSubscribers = baseList.filter(sub => {
+                const email = (sub.email || '').toLowerCase();
+                const name = (sub.name || '').toLowerCase();
+                return email.includes(searchQuery) || name.includes(searchQuery);
+            });
+        }
+
+        function displaySubscribers() {
+            const container = document.getElementById('subscribers-list');
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageSubscribers = filteredSubscribers.slice(start, end);
+
+            if (filteredSubscribers.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>No subscribers found</p>
+                    </div>
+                `;
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+
+            const totalPages = Math.ceil(filteredSubscribers.length / itemsPerPage);
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" onchange="toggleSelectAll(this)" id="select-all"></th>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Source</th>
+                            <th>Subscribed Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${pageSubscribers.map(sub => `
+                            <tr>
+                                <td>
+                                    <input type="checkbox"
+                                           class="subscriber-checkbox"
+                                           value="${sub.id}"
+                                           onchange="toggleSubscriber(this)"
+                                           ${selectedSubscribers.has(sub.id) ? 'checked' : ''}>
+                                </td>
+                                <td>${escapeHtml(sub.email)}</td>
+                                <td>${escapeHtml(sub.name || '-')}</td>
+                                <td><span class="status-badge status-${sub.status}">${formatStatus(sub.status)}</span></td>
+                                <td>${escapeHtml(sub.source || '-')}</td>
+                                <td>${formatDate(sub.created_at)}</td>
+                                <td>
+                                    <select onchange="updateSubscriberStatus('${sub.id}', this.value)" style="padding: 0.25rem; border: 1px solid var(--border); border-radius: 4px;">
+                                        <option value="">Change status...</option>
+                                        <option value="subscribed">Subscribed</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="unsubscribed">Unsubscribed</option>
+                                        <option value="dormant">Dormant</option>
+                                        <option value="bounced">Bounced</option>
+                                    </select>
+                                    <button class="btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.85rem; margin-left: 0.25rem;" onclick="viewHistory('${sub.id}')">History</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            // Update pagination
+            if (totalPages > 1) {
+                document.getElementById('pagination').style.display = 'flex';
+                document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages}`;
+                document.getElementById('prev-btn').disabled = currentPage === 1;
+                document.getElementById('next-btn').disabled = currentPage === totalPages;
+            } else {
+                document.getElementById('pagination').style.display = 'none';
+            }
+        }
+
+        function toggleSelectAll(checkbox) {
+            const checkboxes = document.querySelectorAll('.subscriber-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = checkbox.checked;
+                const id = cb.value;
+                if (checkbox.checked) {
+                    selectedSubscribers.add(id);
+                } else {
+                    selectedSubscribers.delete(id);
+                }
+            });
+            updateBulkActions();
+        }
+
+        function toggleSubscriber(checkbox) {
+            const id = checkbox.value;
+            if (checkbox.checked) {
+                selectedSubscribers.add(id);
+            } else {
+                selectedSubscribers.delete(id);
+            }
+            updateBulkActions();
+        }
+
+        function updateBulkActions() {
+            const bulkActions = document.getElementById('bulk-actions');
+            const selectedCount = document.getElementById('selected-count');
+
+            selectedCount.textContent = selectedSubscribers.size;
+
+            if (selectedSubscribers.size > 0) {
+                bulkActions.classList.add('show');
+            } else {
+                bulkActions.classList.remove('show');
+            }
+        }
+
+        function clearSelection() {
+            selectedSubscribers.clear();
+            document.querySelectorAll('.subscriber-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('select-all').checked = false;
+            updateBulkActions();
+        }
+
+        async function updateSubscriberStatus(id, newStatus) {
+            if (!newStatus) return;
+
+            try {
+                const response = await fetch(`/admin/subscribers/${id}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                if (response.ok) {
+                    showMessage('Status updated successfully', 'success');
+                    await loadSubscribers();
+                } else {
+                    const error = await response.json();
+                    showMessage('Error: ' + (error.error || 'Failed to update status'), 'error');
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                showMessage('Error: Failed to update status', 'error');
+            }
+        }
+
+        async function bulkUpdateStatus(newStatus) {
+            if (selectedSubscribers.size === 0) {
+                showMessage('No subscribers selected', 'error');
+                return;
+            }
+
+            if (!confirm(`Update status to "${newStatus}" for ${selectedSubscribers.size} subscriber(s)?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/admin/subscribers/bulk-update', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        subscriber_ids: Array.from(selectedSubscribers),
+                        status: newStatus
+                    })
+                });
+
+                if (response.ok) {
+                    showMessage(`${selectedSubscribers.size} subscriber(s) updated successfully`, 'success');
+                    clearSelection();
+                    await loadSubscribers();
+                } else {
+                    const error = await response.json();
+                    showMessage('Error: ' + (error.error || 'Failed to update subscribers'), 'error');
+                }
+            } catch (error) {
+                console.error('Error updating subscribers:', error);
+                showMessage('Error: Failed to update subscribers', 'error');
+            }
+        }
+
+        async function viewHistory(id) {
+            const modal = document.getElementById('history-modal');
+            const content = document.getElementById('history-content');
+
+            modal.classList.add('show');
+            content.innerHTML = '<div class="loading">Loading history...</div>';
+
+            try {
+                const response = await fetch(`/admin/subscribers/${id}/history`);
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch history');
+                }
+
+                const data = await response.json();
+                const history = data.history || [];
+
+                if (history.length === 0) {
+                    content.innerHTML = '<div class="empty-state">No history available</div>';
+                    return;
+                }
+
+                content.innerHTML = history.map(item => `
+                    <div class="history-item">
+                        <div class="history-date">${formatDateTime(item.created_at)}</div>
+                        <div class="history-event">${escapeHtml(item.event)}</div>
+                        ${item.details ? `<div>${escapeHtml(item.details)}</div>` : ''}
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading history:', error);
+                content.innerHTML = '<div class="empty-state">Error loading history</div>';
+            }
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('history-modal').classList.remove('show');
+        }
+
+        async function exportToCSV() {
+            try {
+                const response = await fetch('/admin/subscribers/export');
+
+                if (!response.ok) {
+                    throw new Error('Failed to export');
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `subscribers-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+                showMessage('Export completed successfully', 'success');
+            } catch (error) {
+                console.error('Error exporting:', error);
+                showMessage('Error: Failed to export subscribers', 'error');
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                displaySubscribers();
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredSubscribers.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                displaySubscribers();
+            }
+        }
+
+        async function logout() {
+            try {
+                await fetch('/admin/logout', { method: 'POST' });
+                window.location.href = '/';
+            } catch (error) {
+                console.error('Error logging out:', error);
+            }
+        }
+
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type} show`;
+
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+            }, 5000);
+        }
+
+        function formatStatus(status) {
+            return status.charAt(0).toUpperCase() + status.slice(1);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Close modal on background click
+        document.getElementById('history-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'history-modal') {
+                closeHistoryModal();
+            }
+        });
+    </script>
+</body>
+</html>

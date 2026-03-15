@@ -1,76 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/utils/connection');
-const session = require('express-session');
-const bcrypt = require('bcryptjs');
 const path = require('path');
-
-// Session middleware - only for admin routes
-const sessionMiddleware = session({
-  secret: process.env.SESSION_SECRET || 'paper-street-events-secret-key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 // 24 hours
-  }
-});
-
-// Authentication middleware
-const requireAuth = (req, res, next) => {
-  if (req.session && req.session.authenticated) {
-    next();
-  } else {
-    // Check if it's an HTML request or API request
-    const isApiRequest = req.headers.accept && req.headers.accept.includes('application/json');
-    if (isApiRequest) {
-      res.status(401).json({ error: 'Unauthorized' });
-    } else {
-      res.redirect('/admin/events/login');
-    }
-  }
-};
+const {
+  sessionMiddleware,
+  requireAuth,
+  handleLogin,
+  handleLogout,
+  checkAuth
+} = require('../middleware/adminAuth');
 
 // Apply session middleware to all routes
 router.use(sessionMiddleware);
 
 // Login endpoint
-router.post('/admin/login', async (req, res) => {
-  try {
-    const { password } = req.body;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-
-    if (!adminPassword) {
-      return res.status(500).json({ error: 'Admin password not configured' });
-    }
-
-    if (password === adminPassword) {
-      req.session.authenticated = true;
-      res.json({ success: true });
-    } else {
-      res.status(401).json({ error: 'Invalid password' });
-    }
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Login failed' });
-  }
-});
+router.post('/admin/login', handleLogin);
 
 // Logout endpoint
-router.post('/admin/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ error: 'Logout failed' });
-    }
-    res.json({ success: true });
-  });
-});
+router.post('/admin/logout', handleLogout);
 
 // Check auth status
-router.get('/admin/check-auth', (req, res) => {
-  res.json({ authenticated: !!req.session.authenticated });
-});
+router.get('/admin/check-auth', checkAuth);
 
 // GET /admin/events/login - Render login page
 router.get('/admin/events/login', (req, res) => {

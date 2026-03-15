@@ -6,7 +6,9 @@ require('dotenv').config();
 
 // Import routes
 const newsletterRoutes = require('./routes/newsletter');
+const newsletterAdmin = require('./routes/newsletterAdmin');
 const eventsAdmin = require('./routes/eventsAdmin');
+const subscribersAdmin = require('./routes/subscribersAdmin');
 const healthRoutes = require('./routes/health');
 const contentApiRoutes = require('./routes/contentApi');
 
@@ -58,8 +60,14 @@ app.use('/api/events', cors({
 // Newsletter routes
 app.use('/newsletter', newsletterRoutes);
 
+// Newsletter admin routes
+app.use('/', newsletterAdmin);
+
 // Events admin routes
 app.use('/', eventsAdmin);
+
+// Subscribers admin routes
+app.use('/', subscribersAdmin);
 
 // Middleware to serve different content based on domain
 app.use((req, res, next) => {
