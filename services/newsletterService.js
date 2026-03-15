@@ -1,10 +1,9 @@
 const db = require('../db/utils/connection');
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
-require('dotenv').config();
 
 // Initialize AWS SES Client
 const sesClient = new SESClient({
-  region: process.env.AWS_REGION || 'us-east-1',
+  region: process.env.AWS_REGION || 'us-east-2',
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -158,9 +157,11 @@ async function sendEmail(toEmail, subject, htmlBody, nudgeToken = 'default') {
   try {
     const command = new SendEmailCommand(params);
     await sesClient.send(command);
+    console.log(`Successfully sent email to ${toEmail}`);
     return true;
   } catch (error) {
     console.error(`Error sending email to ${toEmail}:`, error.message);
+    console.error('Full error:', error);
     return false;
   }
 }
@@ -173,11 +174,14 @@ async function sendEmail(toEmail, subject, htmlBody, nudgeToken = 'default') {
  */
 async function sendTestNewsletter(recipientEmail, previewData) {
   try {
+    console.log('sendTestNewsletter called with:', { recipientEmail, hasPreviewData: !!previewData });
+
     if (!recipientEmail || !recipientEmail.includes('@')) {
       throw new Error('Invalid email address');
     }
 
     const { subject, htmlBody } = previewData;
+    console.log('Preview data extracted:', { hasSubject: !!subject, htmlBodyLength: htmlBody?.length });
 
     if (!subject || !htmlBody) {
       throw new Error('Missing newsletter content');
