@@ -30,7 +30,8 @@ CREATE TABLE events (
 -- Create indexes for performance
 CREATE INDEX idx_events_date ON events(event_date);
 CREATE INDEX idx_events_category ON events(category);
-CREATE INDEX idx_events_date_range ON events(event_date) WHERE event_date >= CURRENT_DATE;
+-- Note: Removed partial index with CURRENT_DATE as it's not immutable
+-- Applications should filter by date in queries instead
 
 -- Add trigger for updated_at
 CREATE TRIGGER update_events_updated_at BEFORE UPDATE ON events
